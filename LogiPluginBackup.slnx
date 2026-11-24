@@ -1,0 +1,9 @@
+<Solution>
+  <Folder Name="/src/">
+    <Project Path="src/LogiPluginBackup.Core/LogiPluginBackup.Core.csproj" />
+    <Project Path="src/LogiPluginBackup.App/LogiPluginBackup.App.csproj" />
+  </Folder>
+  <Folder Name="/tests/">
+    <Project Path="tests/LogiPluginBackup.Core.Tests/LogiPluginBackup.Core.Tests.csproj" />
+  </Folder>
+</Solution>

@@ -1,0 +1,132 @@
+<Window x:Class="LogiPluginBackup.App.MainWindow"
+        xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+        xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+        Title="Logi Plugin Backup - sauvegarde et restauration des plugins Logi Options+"
+        Width="1000" Height="760" MinWidth="820" MinHeight="600" WindowStartupLocation="CenterScreen">
+    <Grid Margin="12">
+        <Grid.RowDefinitions>
+            <RowDefinition Height="*"/>
+            <RowDefinition Height="Auto"/>
+            <RowDefinition Height="150"/>
+        </Grid.RowDefinitions>
+
+        <TabControl x:Name="Tabs" Grid.Row="0">
+
+            <!-- ===================== BACKUP ===================== -->
+            <TabItem Header="Sauvegarder">
+                <Grid Margin="10">
+                    <Grid.RowDefinitions>
+                        <RowDefinition Height="*"/>
+                        <RowDefinition Height="Auto"/>
+                        <RowDefinition Height="Auto"/>
+                    </Grid.RowDefinitions>
+
+                    <GroupBox Header="Plugins installés" Grid.Row="0">
+                        <DockPanel>
+                            <StackPanel DockPanel.Dock="Bottom" Orientation="Horizontal" Margin="0,8,0,0">
+                                <Button Content="Tout cocher" Click="BackupAll_Click"/>
+                                <Button Content="Tout décocher" Click="BackupNone_Click"/>
+                                <TextBlock x:Name="BackupSummary" VerticalAlignment="Center" Margin="8,0,0,0"/>
+                            </StackPanel>
+                            <DataGrid x:Name="BackupGrid" AutoGenerateColumns="False" CanUserAddRows="False"
+                                      HeadersVisibility="Column" GridLinesVisibility="Horizontal" SelectionMode="Single">
+                                <DataGrid.Columns>
+                                    <DataGridCheckBoxColumn Binding="{Binding Selected, UpdateSourceTrigger=PropertyChanged}" Width="34"/>
+                                    <DataGridTextColumn Header="Plugin" Binding="{Binding DisplayName}" IsReadOnly="True" Width="*"/>
+                                    <DataGridTextColumn Header="Version" Binding="{Binding Version}" IsReadOnly="True" Width="110"/>
+                                    <DataGridTextColumn Header="Auteur" Binding="{Binding Author}" IsReadOnly="True" Width="160"/>
+                                    <DataGridTextColumn Header="Type" Binding="{Binding Kind}" IsReadOnly="True" Width="80"/>
+                                    <DataGridTextColumn Header="Taille" Binding="{Binding SizeText}" IsReadOnly="True" Width="80"/>
+                                </DataGrid.Columns>
+                            </DataGrid>
+                        </DockPanel>
+                    </GroupBox>
+
+                    <GroupBox Header="Configuration à inclure" Grid.Row="1">
+                        <ItemsControl x:Name="BackupConfigList">
+                            <ItemsControl.ItemTemplate>
+                                <DataTemplate>
+                                    <CheckBox Content="{Binding Label}" IsChecked="{Binding Selected, Mode=TwoWay}" Margin="0,2"/>
+                                </DataTemplate>
+                            </ItemsControl.ItemTemplate>
+                        </ItemsControl>
+                    </GroupBox>
+
+                    <DockPanel Grid.Row="2">
+                        <Button DockPanel.Dock="Right" x:Name="BackupButton" Content="Sauvegarder" Margin="8,0,0,0"
+                                FontWeight="SemiBold" Click="Backup_Click"/>
+                        <Button DockPanel.Dock="Right" Content="Parcourir..." Click="BackupBrowse_Click"/>
+                        <TextBlock DockPanel.Dock="Left" Text="Fichier :" VerticalAlignment="Center" Margin="0,0,8,0"/>
+                        <TextBox x:Name="BackupPath" VerticalContentAlignment="Center" Margin="0,0,8,0"/>
+                    </DockPanel>
+                </Grid>
+            </TabItem>
+
+            <!-- ===================== RESTORE ===================== -->
+            <TabItem Header="Restaurer">
+                <Grid Margin="10">
+                    <Grid.RowDefinitions>
+                        <RowDefinition Height="Auto"/>
+                        <RowDefinition Height="Auto"/>
+                        <RowDefinition Height="*"/>
+                        <RowDefinition Height="Auto"/>
+                        <RowDefinition Height="Auto"/>
+                    </Grid.RowDefinitions>
+
+                    <DockPanel Grid.Row="0" Margin="0,0,0,8">
+                        <Button DockPanel.Dock="Right" Content="Ouvrir une sauvegarde..." Margin="8,0,0,0" Click="RestoreBrowse_Click"/>
+                        <TextBlock DockPanel.Dock="Left" Text="Sauvegarde :" VerticalAlignment="Center" Margin="0,0,8,0"/>
+                        <TextBox x:Name="RestorePath" IsReadOnly="True" VerticalContentAlignment="Center"/>
+                    </DockPanel>
+
+                    <TextBlock x:Name="RestoreInfo" Grid.Row="1" TextWrapping="Wrap" Margin="0,0,0,8"
+                               Text="Choisissez un fichier .lpbak créé par cette application."/>
+
+                    <GroupBox Header="Plugins de la sauvegarde" Grid.Row="2">
+                        <DockPanel>
+                            <StackPanel DockPanel.Dock="Bottom" Orientation="Horizontal" Margin="0,8,0,0">
+                                <Button Content="Tout cocher" Click="RestoreAll_Click"/>
+                                <Button Content="Tout décocher" Click="RestoreNone_Click"/>
+                                <Button Content="Cocher ce qui diffère" Click="RestoreDiff_Click"/>
+                            </StackPanel>
+                            <DataGrid x:Name="RestoreGrid" AutoGenerateColumns="False" CanUserAddRows="False"
+                                      HeadersVisibility="Column" GridLinesVisibility="Horizontal" SelectionMode="Single">
+                                <DataGrid.Columns>
+                                    <DataGridCheckBoxColumn Binding="{Binding Selected, UpdateSourceTrigger=PropertyChanged}" Width="34"/>
+                                    <DataGridTextColumn Header="Plugin" Binding="{Binding DisplayName}" IsReadOnly="True" Width="*"/>
+                                    <DataGridTextColumn Header="Dans la sauvegarde" Binding="{Binding Version}" IsReadOnly="True" Width="130"/>
+                                    <DataGridTextColumn Header="Installé ici" Binding="{Binding Installed}" IsReadOnly="True" Width="110"/>
+                                    <DataGridTextColumn Header="État" Binding="{Binding Status}" IsReadOnly="True" Width="190"/>
+                                </DataGrid.Columns>
+                            </DataGrid>
+                        </DockPanel>
+                    </GroupBox>
+
+                    <GroupBox Header="Configuration de la sauvegarde" Grid.Row="3">
+                        <ItemsControl x:Name="RestoreConfigList">
+                            <ItemsControl.ItemTemplate>
+                                <DataTemplate>
+                                    <CheckBox Content="{Binding Label}" IsChecked="{Binding Selected, Mode=TwoWay}" Margin="0,2"/>
+                                </DataTemplate>
+                            </ItemsControl.ItemTemplate>
+                        </ItemsControl>
+                    </GroupBox>
+
+                    <StackPanel Grid.Row="4">
+                        <CheckBox x:Name="StopServiceBox" IsChecked="True" Margin="0,0,0,8"
+                                  Content="Arrêter le service de plugins pendant la restauration (recommandé, Options+ le relance seul)"/>
+                        <StackPanel Orientation="Horizontal">
+                            <Button x:Name="VerifyButton" Content="Vérifier l'intégrité" Click="Verify_Click" IsEnabled="False"/>
+                            <Button x:Name="RestoreButton" Content="Restaurer" FontWeight="SemiBold" Click="Restore_Click" IsEnabled="False"/>
+                        </StackPanel>
+                    </StackPanel>
+                </Grid>
+            </TabItem>
+        </TabControl>
+
+        <ProgressBar x:Name="Busy" Grid.Row="1" Height="6" Margin="0,8,0,8" IsIndeterminate="True" Visibility="Hidden"/>
+
+        <TextBox x:Name="LogBox" Grid.Row="2" IsReadOnly="True" VerticalScrollBarVisibility="Auto"
+                 FontFamily="Consolas" FontSize="12" TextWrapping="Wrap"/>
+    </Grid>
+</Window>
